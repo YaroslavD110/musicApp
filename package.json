@@ -1,0 +1,37 @@
+{
+  "name": "music_app",
+  "version": "1.0.0",
+  "author": "tangerine_",
+  "main": "./src/index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tangerine69/musicApp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tangerine69/musicApp/issues"
+  },
+  "homepage": "https://github.com/tangerine69/musicApp#readme",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject"
+  },
+  "dependencies": {
+    "firebase": "^5.3.1",
+    "history": "^4.7.2",
+    "immutable": "^3.8.2",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "react-redux": "^5.0.7",
+    "react-router-dom": "^4.3.1",
+    "react-router-redux": "^5.0.0-alpha.9",
+    "react-scripts": "1.1.4",
+    "redux": "^4.0.0",
+    "redux-saga": "^0.16.0",
+    "semantic-ui-react": "^0.82.2"
+  },
+  "devDependencies": {
+    "redux-logger": "^3.0.6"
+  }
+}
