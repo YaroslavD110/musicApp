@@ -1,25 +1,27 @@
 import { routerReducer } from "react-router-redux";
 import { combineReducers } from "redux";
 import { all } from "redux-saga/effects";
+import { reducer as formReducer } from "redux-form";
 
 import {
-  widgetName as signInWidget,
-  saga as signInSaga,
-  reducer as signInReducer
-} from "./auth/signIn";
+  widgetName as userWidget,
+  saga as userSaga,
+  reducer as userReducer
+} from "./user";
 
 import {
-  widgetName as signUpWidget,
-  saga as signUpSaga,
-  reducer as signUpReducer
-} from "./auth/signUp";
+  widgetName as authWidget,
+  rootSaga as authSaga,
+  rootReducer as authReducer
+} from "./auth";
 
 export const rootReducer = combineReducers({
   Router: routerReducer,
-  [signInWidget]: signInReducer,
-  [signUpWidget]: signUpReducer
+  form: formReducer,
+  [userWidget]: userReducer,
+  [authWidget]: authReducer
 });
 
 export const rootSaga = function*() {
-  yield all([signInSaga, signUpSaga]);
+  yield all([userSaga(), authSaga()]);
 };
