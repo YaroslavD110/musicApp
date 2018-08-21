@@ -15,13 +15,20 @@ import {
   rootReducer as authReducer
 } from "./auth";
 
+import {
+  widgetName as musicWidget,
+  rootSaga as musicSaga,
+  rootReducer as musicReducer
+} from "./music";
+
 export const rootReducer = combineReducers({
   Router: routerReducer,
   form: formReducer,
   [userWidget]: userReducer,
-  [authWidget]: authReducer
+  [authWidget]: authReducer,
+  [musicWidget]: musicReducer
 });
 
 export const rootSaga = function*() {
-  yield all([userSaga(), authSaga()]);
+  yield all([userSaga(), authSaga(), musicSaga()]);
 };

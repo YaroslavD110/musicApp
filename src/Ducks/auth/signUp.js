@@ -40,7 +40,11 @@ export const signUpUser = user => ({
 /* Sagas */
 export const signUpSaga = function*({ payload: { user } }) {
   try {
-    yield auth.createUserWithEmailAndPassword(user.email, user.password);
+    const createdUser = yield auth.createUserWithEmailAndPassword(user.email, user.password);
+    console.log('createdUser :', createdUser);
+    yield createdUser.user.updateProfile({
+      displayName: user.name
+    });
     yield put({
       type: SIGN_UP_USER_SUCCESS
     });

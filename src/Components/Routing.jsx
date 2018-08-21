@@ -1,18 +1,22 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { Switch, Route } from "react-router-dom";
-import ProtectedRoute from "./common/ProtectedRoute";
+import CustomRoute from "../Common/CustomRoute";
 
-import LoginPage from "./Pages/Login";
-import HomePage from "./Pages/Home";
+import pagesConfig from "../Pages";
+import LoginPage from "../Pages/Login";
 
 export class Routing extends Component {
-  static propTypes = {};
-
   render() {
     return (
       <Switch>
-        <ProtectedRoute exact path="/" component={HomePage} />
+        {pagesConfig.map(page => (
+          <CustomRoute
+            key={page.name}
+            exact
+            path={page.path}
+            component={page.component}
+          />
+        ))}
         <Route exact path="/login" component={LoginPage} />
       </Switch>
     );
