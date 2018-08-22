@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { Form, Button } from "semantic-ui-react";
 import { connect } from "react-redux";
@@ -38,7 +38,7 @@ const SignUpForm = ({
   formErrors,
   submitFailed
 }) => (
-  <div>
+  <Fragment>
     <Form
       onSubmit={handleSubmit(value => signUpUser(value))}
       loading={isLoading}
@@ -78,7 +78,7 @@ const SignUpForm = ({
 
       <Button type="submit">Submit</Button>
     </Form>
-  </div>
+  </Fragment>
 );
 
 SignUpForm.propTypes = {

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { Segment, Icon, Divider } from "semantic-ui-react";
 import styled from "styled-components";

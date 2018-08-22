@@ -1,7 +1,7 @@
 import HomePage from "./Home";
 import PlaylistsPage from "./Playlists";
-import UploadPage from "./Upload/index";
 import UserSettingsPage from "./UserSettings/index";
+import UploadPage from "./Upload/index";
 
 export default [
   {
@@ -23,7 +23,7 @@ export default [
     component: UserSettingsPage
   },
   {
-    name: "Upload",
+    name: "Upload music",
     iconName: "upload",
     path: "/upload",
     component: UploadPage

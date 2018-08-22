@@ -2,7 +2,7 @@ import { all, takeEvery, put } from "redux-saga/effects";
 import { appName } from "../../config";
 import { storage, database } from "../../firebase";
 import { Map } from "immutable";
-import { toast } from "react-semantic-toasts";
+import { errorToast, successToast } from "../../utils/toasts";
 import getUuid from "../../utils/getUuid";
 
 /* Actions */
@@ -61,23 +61,13 @@ export const uplaodSaga = function*({
     yield put({
       type: UPLOAD_SONG_SUCCESS
     });
-    yield toast({
-      type: "success",
-      icon: "smile outline",
-      title: "Uploading success",
-      time: 5000
-    });
+    yield successToast("Uploading success");
   } catch (error) {
     yield put({
       type: UPLOAD_SONG_FILED,
       payload: error
     });
-    yield toast({
-      type: "error",
-      icon: "meh",
-      title: "Uploading filed!",
-      time: 5000
-    });
+    yield errorToast("Uploading filed!");
   }
 };
 

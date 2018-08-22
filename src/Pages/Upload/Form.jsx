@@ -29,7 +29,7 @@ const validate = values => {
     errors.song = "Song is Required";
   } else if (
     values.song[0].type !== "audio/mp3" ||
-    !new RegExp("^.+.mp3$").test(values.song[0].name)
+    !/^.+\.mp3$/i.test(values.song[0].name)
   ) {
     errors.song = "Song has invalid type or name";
   }
@@ -112,6 +112,8 @@ export const UploadForm = ({
             name="song"
             type="file"
             icon="file audio outline"
+            title="Drop your music here"
+            subtitle="Or click here to select local music"
             submitFailed={submitFailed}
             formErrors={formErrors}
             setFieldValue={setFieldValue}

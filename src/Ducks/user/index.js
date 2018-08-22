@@ -1,8 +1,9 @@
-import { all, put, take, select } from "redux-saga/effects";
+import { all, put, take, select, takeEvery, call } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { appName } from "../../config";
 import { Map } from "immutable";
-import { auth } from "../../firebase";
+import firebase, { auth, storage } from "../../firebase";
+import { errorToast, successToast } from "../../utils/toasts";
 import { push } from "react-router-redux";
 
 /* Actions */
@@ -10,9 +11,9 @@ export const widgetName = "User";
 export const REGISTER_USER = `${appName}/${widgetName}/REGISTER_USER`;
 export const UNREGISTER_USER = `${appName}/${widgetName}/UNREGISTER_USER`;
 
-export const SET_USER_PHOTO_REQUEST = `${appName}/${widgetName}/SET_USER_PHOTO_REQUEST`;
-export const SET_USER_PHOTO_SUCCESS = `${appName}/${widgetName}/SET_USER_PHOTO_SUCCESS`;
-export const SET_USER_PHOTO_FILED = `${appName}/${widgetName}/SET_USER_PHOTO_FILED`;
+export const UPDATE_USER_DATA_REQUEST = `${appName}/${widgetName}/UPDATE_USER_DATA_REQUEST`;
+export const UPDATE_USER_DATA_SUCCESS = `${appName}/${widgetName}/UPDATE_USER_DATA_SUCCESS`;
+export const UPDATE_USER_DATA_FILED = `${appName}/${widgetName}/UPDATE_USER_DATA_FILED`;
 
 /* Reducer */
 const lcStrorage = window.localStorage.getItem(appName)
@@ -31,18 +32,24 @@ const initialState = Map({
 export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case REGISTER_USER:
-      return state
-        .set("userID", payload.userID)
-        .set("userName", payload.userName)
-        .set("userEmail", payload.userEmail)
-        .set("isLogged", true);
+      return state.set("isLogged", true).merge(payload.newUser);
 
     case UNREGISTER_USER:
       return state
         .set("userID", null)
         .set("userName", null)
         .set("userEmail", null)
+        .set("userPhoto", null)
         .set("isLogged", false);
+
+    case UPDATE_USER_DATA_REQUEST:
+      return state.set("isLoading", true);
+
+    case UPDATE_USER_DATA_SUCCESS:
+      return state.set("isLoading", false).merge(payload.data);
+
+    case UPDATE_USER_DATA_FILED:
+      return state.set("isLoading", false);
 
     default:
       return state;
@@ -50,10 +57,10 @@ export const reducer = (state = initialState, { type, payload }) => {
 };
 
 /* Actions creators */
-// export const logInUser = user => ({
-//   type: LOG_IN_USER_REQUEST,
-//   payload: user
-// });
+export const updateUserData = data => ({
+  type: UPDATE_USER_DATA_REQUEST,
+  payload: { data }
+});
 
 /* Sagas */
 export const watchUserStatusSaga = function*() {
@@ -64,19 +71,17 @@ export const watchUserStatusSaga = function*() {
   while (true) {
     const { user } = yield take(channel);
 
-    yield console.log("user :", user);
-
     if (user) {
       const newUser = {
         userID: user.uid,
         userName: user.displayName,
         userEmail: user.email,
-        userPhoto: null
+        userPhoto: user.photoURL
       };
 
       yield put({
         type: REGISTER_USER,
-        payload: newUser
+        payload: { newUser }
       });
 
       const currentPath = yield select(state => state.Router.location.pathname);
@@ -100,6 +105,72 @@ export const watchUserStatusSaga = function*() {
   }
 };
 
+export const updateUserDataSaga = function*({ payload: { data } }) {
+  const User = auth.currentUser;
+  let newUserData = {};
+
+  console.log("data :", data);
+  console.log("User :", User);
+
+  try {
+    if (data.email) {
+      if (!data.password) throw new Error();
+
+      yield User.reauthenticateWithCredential(
+        firebase.auth.EmailAuthProvider.credential(User.email, data.password)
+      );
+
+      yield User.updateEmail(data.email);
+      newUserData.userEmail = data.email;
+    }
+
+    if (data.newPassword) {
+      if (!data.oldPassword) throw new Error();
+
+      yield User.reauthenticateWithCredential(
+        firebase.auth.EmailAuthProvider.credential(User.email, data.oldPassword)
+      );
+
+      yield User.updatePassword(data.newPassword);
+    }
+
+    if (data.avatar) {
+      const avatarStorageRef = storage.ref(`/${User.uid}/images/avatar`);
+      const avatar = data.avatar[0];
+      const type = avatar.type.split("/")[1];
+
+      if (User.photoURL) yield avatarStorageRef.delete();
+      yield avatarStorageRef.put(avatar);
+
+      data.newAvatar = yield avatarStorageRef.getDownloadURL();
+    }
+
+    if (data.name || data.newAvatar) {
+      yield User.updateProfile({
+        displayName: data.name || User.displayName,
+        photoURL: data.newAvatar || User.photoURL
+      });
+      newUserData.userName = data.name || User.displayName;
+      newUserData.userPhoto = data.newAvatar || User.photoURL;
+    }
+
+    yield put({
+      type: UPDATE_USER_DATA_SUCCESS,
+      payload: {
+        data: newUserData
+      }
+    });
+
+    yield successToast("Data was successfully changed");
+  } catch (error) {
+    yield put({ type: UPDATE_USER_DATA_FILED, payload: error });
+    yield errorToast("Oh, something went wrong");
+  }
+};
+
 export const saga = function*() {
-  yield all([watchUserStatusSaga()]);
+  yield all([
+    watchUserStatusSaga(),
+    takeEvery(UPDATE_USER_DATA_REQUEST, updateUserDataSaga)
+  ]);
 };

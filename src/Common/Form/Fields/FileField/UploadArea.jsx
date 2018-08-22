@@ -10,9 +10,11 @@ const UploadArea = ({
   inputProps,
   submitFailed,
   formErrors,
-  connectDropTarget
+  connectDropTarget,
+  title,
+  subtitle
 }) => {
-  let hasError = submitFailed && formErrors;
+  let hasError = submitFailed && formErrors && formErrors[inputProps.name];
 
   return connectDropTarget(
     <div style={{ width: "100%" }}>
@@ -33,10 +35,8 @@ const UploadArea = ({
             style={isOver ? { color: "#fff" } : {}}
             name={isOver ? "cloud download" : "download"}
           />
-          <BigText style={isOver ? { color: "#fff" } : {}}>
-            Drop your music here
-          </BigText>
-          <SmallText>Or click here to select local music</SmallText>
+          <BigText style={isOver ? { color: "#fff" } : {}}>{title}</BigText>
+          <SmallText>{subtitle}</SmallText>
         </StyledSegment>
       </InputArea>
     </div>

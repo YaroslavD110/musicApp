@@ -65,7 +65,7 @@ const IconWrap = styled.div`
   left: 0;
   height: 100%;
   width: 100%;
-  border-radius: 50%;
+  border-radius: 500rem;
   background-color: rgba(0, 0, 0, 0.5);
 
   > a {

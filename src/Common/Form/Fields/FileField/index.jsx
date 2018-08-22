@@ -15,7 +15,9 @@ export const FileField = ({
   name,
   type,
   submitFailed,
-  formErrors
+  formErrors,
+  title,
+  subtitle
 }) => (
   <Field
     name={name}
@@ -39,6 +41,8 @@ export const FileField = ({
           isOver={isOver}
           submitFailed={submitFailed}
           formErrors={formErrors}
+          title={title}
+          subtitle={subtitle}
         />
       );
     }}
@@ -59,8 +63,10 @@ FileField.propTypes = {
 export default DropTarget(
   NativeTypes.FILE,
   {
-    drop: (props, monitor) =>
-      props.setFieldValue(props.input.name, monitor.getItem().files)
+    drop(props, monitor) {
+      console.log("props :", props);
+      return props.setFieldValue(props.name, monitor.getItem().files);
+    }
   },
   (connect, monitor) => ({
     connectDropTarget: connect.dropTarget(),
