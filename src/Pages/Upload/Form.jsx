@@ -8,7 +8,7 @@ import { UploadSong } from "../../Ducks/music/upload";
 
 import FileField from "../../Common/Form/Fields/FileField/index";
 import SimpleField from "../../Common/Form/Fields/SimpleField";
-import SelectField from "../../Common/Form/Fields/SelectField";
+import DatalistField from "../../Common/Form/Fields/DatalistField";
 
 const validate = values => {
   const errors = {};
@@ -57,13 +57,7 @@ export const UploadForm = ({
       playlist
     });
 
-  const options = playlists
-    ? playlists.map((val, key) => ({
-        key,
-        text: val,
-        value: val
-      }))
-    : [];
+  const options = playlists && playlists.toArray();
 
   if (submitSucceeded && !isLoading) reset();
 
@@ -85,26 +79,14 @@ export const UploadForm = ({
         </StyledFieldWrap>
 
         <StyledFieldWrap>
-          {options.length > 0 ? (
-            <SelectField
-              name="playlist"
-              label="Select playlist for your new song"
-              placeholder="Select playlist for your new song"
-              submitFailed={submitFailed}
-              formErrors={formErrors}
-              options={options}
-              setFieldValue={setFieldValue}
-            />
-          ) : (
-            <SimpleField
-              name="playlist"
-              type="text"
-              label="Create your first playlist"
-              placeholder="Enter playlist name"
-              submitFailed={submitFailed}
-              formErrors={formErrors}
-            />
-          )}
+          <DatalistField
+            name="playlist"
+            label="Select or enter playlist for your new song"
+            placeholder="Playlist for your new song"
+            submitFailed={submitFailed}
+            formErrors={formErrors}
+            options={options}
+          />
         </StyledFieldWrap>
 
         <StyledFieldWrap>

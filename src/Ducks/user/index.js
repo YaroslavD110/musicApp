@@ -1,4 +1,4 @@
-import { all, put, take, select, takeEvery, call } from "redux-saga/effects";
+import { all, put, take, select, takeEvery } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { appName } from "../../config";
 import { Map } from "immutable";
@@ -79,6 +79,8 @@ export const watchUserStatusSaga = function*() {
         userPhoto: user.photoURL
       };
 
+      console.log("user :", user);
+
       yield put({
         type: REGISTER_USER,
         payload: { newUser }
@@ -107,10 +109,7 @@ export const watchUserStatusSaga = function*() {
 
 export const updateUserDataSaga = function*({ payload: { data } }) {
   const User = auth.currentUser;
-  let newUserData = {};
-
-  console.log("data :", data);
-  console.log("User :", User);
+  const newUserData = {};
 
   try {
     if (data.email) {
@@ -137,7 +136,6 @@ export const updateUserDataSaga = function*({ payload: { data } }) {
     if (data.avatar) {
       const avatarStorageRef = storage.ref(`/${User.uid}/images/avatar`);
       const avatar = data.avatar[0];
-      const type = avatar.type.split("/")[1];
 
       if (User.photoURL) yield avatarStorageRef.delete();
       yield avatarStorageRef.put(avatar);

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 //import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { SemanticToastContainer } from "react-semantic-toasts";
 import HeaderPanel from "./HeaderPanel";
 import Navigation from "./Navigation";
 
@@ -17,7 +16,6 @@ export class UICover extends Component {
           <Navigation />
           <MainContentWrap>{this.props.children}</MainContentWrap>
         </MiddleContentWrap>
-        <SemanticToastContainer position="bottom-right" />
       </PageWrap>
     );
   }

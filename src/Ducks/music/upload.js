@@ -1,4 +1,4 @@
-import { all, takeEvery, put } from "redux-saga/effects";
+import { all, takeEvery, put, call } from "redux-saga/effects";
 import { appName } from "../../config";
 import { storage, database } from "../../firebase";
 import { Map } from "immutable";
@@ -44,30 +44,48 @@ export const uplaodSaga = function*({
   payload: { userID, songName, playlist, song }
 }) {
   const songID = getUuid();
-  const fullSongName = `${songID}.mp3`;
-  const storageRef = storage.ref(`/${userID}/songs/${fullSongName}`);
+  const storageRef = storage.ref(`/${userID}/songs/${songID}`);
   const databseRef = database.ref(`/${userID}`);
 
   try {
-    yield storageRef.put(song);
-    yield databseRef.child(`/playlists/${playlist}`).push({
-      song: fullSongName
-    });
-    yield databseRef.child(`/songs`).push({
-      songName: songName,
-      songRef: fullSongName,
+    yield call([storageRef, storageRef.put], song);
+
+    const songURL = yield call([storageRef, storageRef.getDownloadURL]);
+    const songsRef = yield call(
+      [databseRef, databseRef.child],
+      `/songs/${songID}`
+    );
+    const playlistsRef = yield call(
+      [databseRef, databseRef.child],
+      "/playlists"
+    );
+
+    const lists = yield call([playlistsRef, playlistsRef.once], "value");
+    if (
+      !lists.val() ||
+      !Object.values(lists.val()).find(name => name === playlist)
+    ) {
+      yield call([playlistsRef, playlistsRef.push], playlist);
+    }
+
+    yield call([songsRef, songsRef.set], {
+      songName,
+      songURL,
       songPlaylist: playlist
     });
+
+    yield call(successToast, "Uploading success");
+
     yield put({
       type: UPLOAD_SONG_SUCCESS
     });
-    yield successToast("Uploading success");
   } catch (error) {
+    yield call(errorToast, "Uploading filed!");
+
     yield put({
       type: UPLOAD_SONG_FILED,
       payload: error
     });
-    yield errorToast("Uploading filed!");
   }
 };
 

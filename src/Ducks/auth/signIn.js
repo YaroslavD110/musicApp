@@ -1,7 +1,8 @@
-import { all, takeEvery, put } from "redux-saga/effects";
+import { all, takeEvery, put, call } from "redux-saga/effects";
 import { appName } from "../../config";
 import { Map } from "immutable";
 import { auth } from "../../firebase";
+import { errorToast } from "../../utils/toasts";
 
 /* Actions */
 export const widgetName = "signIn";
@@ -40,11 +41,16 @@ export const signInUser = user => ({
 /* Sagas */
 export const signInSaga = function*({ payload: { user } }) {
   try {
-    yield auth.signInWithEmailAndPassword(user.email, user.password);
+    yield call(
+      [auth, auth.signInWithEmailAndPassword],
+      user.email,
+      user.password
+    );
     yield put({
       type: SIGN_IN_USER_SUCCESS
     });
   } catch (error) {
+    yield call(errorToast, "Oh, something went wrong");
     yield put({ type: SIGN_IN_USER_FILED, payload: { error: error.message } });
   }
 };

@@ -1,5 +1,5 @@
 import HomePage from "./Home";
-import PlaylistsPage from "./Playlists";
+import PlaylistsPage from "./Playlists/index";
 import UserSettingsPage from "./UserSettings/index";
 import UploadPage from "./Upload/index";
 

@@ -13,13 +13,20 @@ import {
   reducer as playlistReducer
 } from "./playlist";
 
+import {
+  widgetName as songsWidget,
+  saga as songsSaga,
+  reducer as songsReducer
+} from "./songs";
+
 export const widgetName = "Music";
 
 export const rootReducer = combineReducers({
   [uploadWidget]: uploadReducer,
-  [playlistWidget]: playlistReducer
+  [playlistWidget]: playlistReducer,
+  [songsWidget]: songsReducer
 });
 
 export const rootSaga = function*() {
-  yield all([uploadSaga(), playlistSaga()]);
+  yield all([uploadSaga(), playlistSaga(), songsSaga()]);
 };

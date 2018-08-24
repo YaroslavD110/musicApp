@@ -64,7 +64,6 @@ export default DropTarget(
   NativeTypes.FILE,
   {
     drop(props, monitor) {
-      console.log("props :", props);
       return props.setFieldValue(props.name, monitor.getItem().files);
     }
   },

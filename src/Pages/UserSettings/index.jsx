@@ -40,7 +40,7 @@ export const UserSettings = () => {
         <Icon name="cog" /> Set up your account
       </UserSettingsHeader>
       <FormsWrap>
-        <Tab panes={tabs} />
+        <Tab menu={{ pointing: true }} panes={tabs} />
       </FormsWrap>
     </div>
   );

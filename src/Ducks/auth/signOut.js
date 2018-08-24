@@ -1,7 +1,8 @@
-import { all, takeEvery, put } from "redux-saga/effects";
+import { all, takeEvery, put, call } from "redux-saga/effects";
 import { appName } from "../../config";
 import { Map } from "immutable";
 import { auth } from "../../firebase";
+import { errorToast } from "../../utils/toasts";
 
 /* Actions */
 export const widgetName = "signOut";
@@ -40,11 +41,12 @@ export const signOutUser = user => ({
 /* Sagas */
 export const signOutSaga = function*({ payload: { user } }) {
   try {
-    yield auth.signOut();
+    yield call([auth, auth.signOut]);
     yield put({
       type: SIGN_OUT_USER_SUCCESS
     });
   } catch (error) {
+    yield call(errorToast, "Oh, something went wrong");
     yield put({ type: SIGN_OUT_USER_FILED, payload: { error: error.message } });
   }
 };
