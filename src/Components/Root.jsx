@@ -4,6 +4,7 @@ import { SemanticToastContainer } from "react-semantic-toasts";
 import Routing from "./Routing";
 
 import "semantic-ui-css/semantic.min.css";
+import "react-virtualized/styles.css";
 
 export class Root extends Component {
   render() {

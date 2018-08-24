@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { DropTarget } from "react-dnd";
 
 import { deleteSong, updateSong } from "../../Ducks/music/songs";
-import Song from "../../Common/Song";
+import DraggableSong from "../../Common/DraggableSong";
 
 class Playlist extends Component {
   static propTypes = {
@@ -23,7 +23,7 @@ class Playlist extends Component {
   };
 
   _rowRenderer = ({ index, key, style }) => (
-    <Song
+    <DraggableSong
       song={this.state.songs[index]}
       deleteSong={this.props.deleteSong}
       style={style}
@@ -43,7 +43,7 @@ class Playlist extends Component {
   }
 
   componentWillMount() {
-    if (this.state.songs && this.state.songs.size) {
+    if (this.state.songs) {
       this.setState({
         songs: this._filterSongs(this.state.songs)
       });

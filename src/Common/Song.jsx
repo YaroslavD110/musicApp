@@ -2,15 +2,13 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Segment, Button, Icon, Header, Confirm } from "semantic-ui-react";
-import { DragSource } from "react-dnd";
 
 import EqulizerIcon from "./EqulizerIcon";
 
 class Song extends Component {
   static propTypes = {
     song: PropTypes.object.isRequired,
-    deleteSong: PropTypes.func.isRequired,
-    connectDragSource: PropTypes.func.isRequired
+    deleteSong: PropTypes.func
   };
 
   _songRef = React.createRef();
@@ -19,10 +17,6 @@ class Song extends Component {
     isPlaying: false,
     isAlertOpen: false
   };
-
-  componentDidMount() {
-    console.log("songRef :", this._songRef);
-  }
 
   _showAlert = () => this.setState({ isAlertOpen: true });
   _hideAlert = () => this.setState({ isAlertOpen: false });
@@ -47,9 +41,9 @@ class Song extends Component {
 
   render() {
     const { isPlaying, isAlertOpen } = this.state;
-    const { song, connectDragSource } = this.props;
+    const { song, deleteSong } = this.props;
 
-    return connectDragSource(
+    return (
       <div style={{ paddingTop: "15px", ...this.props.style }}>
         <Confirm
           open={isAlertOpen}
@@ -85,7 +79,11 @@ class Song extends Component {
               <Button onClick={this._replay}>
                 <Icon name="retweet" />
               </Button>
-              <Button color="red" onClick={this._showAlert}>
+              <Button
+                color="red"
+                onClick={this._showAlert}
+                disabled={!deleteSong}
+              >
                 <Icon name="trash alternate outline" />
               </Button>
             </Button.Group>
@@ -97,7 +95,6 @@ class Song extends Component {
 }
 
 const StyledSegment = styled(Segment)`
-  cursor: grab;
   display: flex;
   width: fit-content;
   margin: 0 !important;
@@ -130,16 +127,4 @@ const StyledHeader = styled(Header)`
   width: 100%;
 `;
 
-export default DragSource(
-  "song",
-  {
-    beginDrag(props) {
-      return {
-        ...props.song
-      };
-    }
-  },
-  (connect, monitor) => ({
-    connectDragSource: connect.dragSource()
-  })
-)(Song);
+export default Song;
