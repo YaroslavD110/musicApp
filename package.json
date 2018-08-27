@@ -11,7 +11,6 @@
   "bugs": {
     "url": "https://github.com/tangerine69/musicApp/issues"
   },
-  "homepage": "https://github.com/tangerine69/musicApp#readme",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -36,7 +35,7 @@
     "redux-form": "^7.4.2",
     "redux-saga": "^0.16.0",
     "semantic-ui-css": "^2.3.3",
-    "semantic-ui-react": "^0.82.2",
+    "semantic-ui-react": "^0.82.3",
     "styled-components": "^3.4.2"
   },
   "devDependencies": {

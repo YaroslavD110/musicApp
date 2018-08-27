@@ -79,8 +79,6 @@ export const watchUserStatusSaga = function*() {
         userPhoto: user.photoURL
       };
 
-      console.log("user :", user);
-
       yield put({
         type: REGISTER_USER,
         payload: { newUser }

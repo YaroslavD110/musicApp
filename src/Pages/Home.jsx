@@ -24,8 +24,6 @@ export class HomePage extends Component {
     if (this._timeOutId) clearTimeout(this._timeOutId);
 
     this._timeOutId = setTimeout(() => {
-      console.log("e.target.value :", value);
-
       this.setState({
         songs: this.props.songs.filter(song =>
           new RegExp(value, "i").test(song.songName)
@@ -43,8 +41,6 @@ export class HomePage extends Component {
   render() {
     const { deleteSong, isLoading } = this.props;
     const { songs } = this.state;
-
-    console.log("songs :", songs);
 
     return (
       <PageWrap>
